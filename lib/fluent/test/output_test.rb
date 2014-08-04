@@ -38,7 +38,7 @@ module Fluent
       attr_accessor :tag
 
       def emit(record, time=Time.now)
-        es = OneEventStream.new(time.to_i, record)
+        es = OneEventStream.new(time.to_f, record)
         chain = TestOutputChain.new
         @instance.emit(@tag, es, chain)
         assert_equal 1, chain.called
@@ -61,7 +61,7 @@ module Fluent
       attr_accessor :tag
 
       def emit(record, time=Time.now)
-        @entries << [time.to_i, record]
+        @entries << [time.to_f, record]
         self
       end
 
@@ -111,9 +111,9 @@ module Fluent
 
       def emit(record, time=Time.now)
         slicer = @instance.instance_eval{@time_slicer}
-        key = slicer.call(time.to_i)
+        key = slicer.call(time.to_f)
         @entries[key] = [] unless @entries.has_key?(key)
-        @entries[key] << [time.to_i, record]
+        @entries[key] << [time.to_f, record]
         self
       end
 

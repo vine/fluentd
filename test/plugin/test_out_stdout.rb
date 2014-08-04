@@ -34,7 +34,7 @@ class StdoutOutputTest < Test::Unit::TestCase
     d = create_driver(CONFIG + "\noutput_type json")
     time = Time.now
     out = capture_log { d.emit({'test' => 'test'}, time) }
-    assert_equal "#{time.localtime} test: {\"test\":\"test\"}\n", out
+    assert_equal "#{time.localtime.iso8601(3)} test: {\"test\":\"test\"}\n", out
 
     # NOTE: Float::NAN is not jsonable
     assert_raise(Yajl::EncodeError) { d.emit({'test' => Float::NAN}, time) }
@@ -44,11 +44,11 @@ class StdoutOutputTest < Test::Unit::TestCase
     d = create_driver(CONFIG + "\noutput_type hash")
     time = Time.now
     out = capture_log { d.emit({'test' => 'test'}, time) }
-    assert_equal "#{time.localtime} test: {\"test\"=>\"test\"}\n", out
+    assert_equal "#{time.localtime.iso8601(3)} test: {\"test\"=>\"test\"}\n", out
 
     # NOTE: Float::NAN is not jsonable, but hash string can output it.
     out = capture_log { d.emit({'test' => Float::NAN}, time) }
-    assert_equal "#{time.localtime} test: {\"test\"=>NaN}\n", out
+    assert_equal "#{time.localtime.iso8601(3)} test: {\"test\"=>NaN}\n", out
   end
 
   private

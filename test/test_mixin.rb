@@ -149,7 +149,7 @@ module MixinTest
 
     def test_include_time_key_true
       format_check({
-        'time' => "2010-05-04T03:02:01Z",
+        'time' => "2010-05-04T03:02:01.000Z",
         'a' => 1
       })
 
