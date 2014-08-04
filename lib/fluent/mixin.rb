@@ -35,11 +35,11 @@ module Fluent
       else
         if localtime
           define_singleton_method(:format_nocache) {|time|
-            Time.at(time).iso8601
+            Time.at(time).iso8601(3)
           }
         else
           define_singleton_method(:format_nocache) {|time|
-            Time.at(time).utc.iso8601
+            Time.at(time).utc.iso8601(3)
           }
         end
       end

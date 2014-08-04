@@ -46,7 +46,7 @@ class FileOutputTest < Test::Unit::TestCase
 
     with_timezone('Asia/Taipei') do
       d.emit({"a"=>1}, time)
-      d.expect_format %[2011-01-02T21:14:15+08:00\ttest\t{"a":1}\n]
+      d.expect_format %[2011-01-02T21:14:15.000+08:00\ttest\t{"a":1}\n]
       d.run
     end
   end
@@ -54,12 +54,12 @@ class FileOutputTest < Test::Unit::TestCase
   def test_format
     d = create_driver
 
-    time = Time.parse("2011-01-02 13:14:15 UTC").to_i
+    time = Time.parse("2011-01-02 13:14:15 UTC").to_f
     d.emit({"a"=>1}, time)
     d.emit({"a"=>2}, time)
 
-    d.expect_format %[2011-01-02T13:14:15Z\ttest\t{"a":1}\n]
-    d.expect_format %[2011-01-02T13:14:15Z\ttest\t{"a":2}\n]
+    d.expect_format %[2011-01-02T13:14:15.000Z\ttest\t{"a":1}\n]
+    d.expect_format %[2011-01-02T13:14:15.000Z\ttest\t{"a":2}\n]
 
     d.run
   end
@@ -85,7 +85,7 @@ class FileOutputTest < Test::Unit::TestCase
   def test_write
     d = create_driver
 
-    time = Time.parse("2011-01-02 13:14:15 UTC").to_i
+    time = Time.parse("2011-01-02 13:14:15 UTC").to_f
     d.emit({"a"=>1}, time)
     d.emit({"a"=>2}, time)
 
@@ -94,13 +94,13 @@ class FileOutputTest < Test::Unit::TestCase
     expect_path = "#{TMP_DIR}/out_file_test._0.log.gz"
     assert_equal expect_path, path
 
-    check_gzipped_result(path, %[2011-01-02T13:14:15Z\ttest\t{"a":1}\n] + %[2011-01-02T13:14:15Z\ttest\t{"a":2}\n])
+    check_gzipped_result(path, %[2011-01-02T13:14:15.000Z\ttest\t{"a":1}\n] + %[2011-01-02T13:14:15.000Z\ttest\t{"a":2}\n])
   end
 
   def test_write_with_format_json
     d = create_driver [CONFIG, 'format json', 'include_time_key true', 'time_as_epoch'].join("\n")
 
-    time = Time.parse("2011-01-02 13:14:15 UTC").to_i
+    time = Time.parse("2011-01-02 13:14:15 UTC").to_f
     d.emit({"a"=>1}, time)
     d.emit({"a"=>2}, time)
 
@@ -112,13 +112,13 @@ class FileOutputTest < Test::Unit::TestCase
   def test_write_with_format_ltsv
     d = create_driver [CONFIG, 'format ltsv', 'include_time_key true'].join("\n")
 
-    time = Time.parse("2011-01-02 13:14:15 UTC").to_i
+    time = Time.parse("2011-01-02 13:14:15 UTC").to_f
     d.emit({"a"=>1}, time)
     d.emit({"a"=>2}, time)
 
     # FileOutput#write returns path
     path = d.run
-    check_gzipped_result(path, %[a:1\ttime:2011-01-02T13:14:15Z\n] + %[a:2\ttime:2011-01-02T13:14:15Z\n])
+    check_gzipped_result(path, %[a:1\ttime:2011-01-02T13:14:15.000Z\n] + %[a:2\ttime:2011-01-02T13:14:15.000Z\n])
   end
 
   def test_write_with_format_single_value
@@ -136,10 +136,10 @@ class FileOutputTest < Test::Unit::TestCase
   def test_write_path_increment
     d = create_driver
 
-    time = Time.parse("2011-01-02 13:14:15 UTC").to_i
+    time = Time.parse("2011-01-02 13:14:15 UTC").to_f
     d.emit({"a"=>1}, time)
     d.emit({"a"=>2}, time)
-    formatted_lines = %[2011-01-02T13:14:15Z\ttest\t{"a":1}\n] + %[2011-01-02T13:14:15Z\ttest\t{"a":2}\n]
+    formatted_lines = %[2011-01-02T13:14:15.000Z\ttest\t{"a":1}\n] + %[2011-01-02T13:14:15.000Z\ttest\t{"a":2}\n]
 
     # FileOutput#write returns path
     path = d.run
@@ -164,7 +164,7 @@ class FileOutputTest < Test::Unit::TestCase
     time = Time.parse("2011-01-02 13:14:15 UTC").to_i
     d.emit({"a"=>1}, time)
     d.emit({"a"=>2}, time)
-    formatted_lines = %[2011-01-02T13:14:15Z\ttest\t{"a":1}\n] + %[2011-01-02T13:14:15Z\ttest\t{"a":2}\n]
+    formatted_lines = %[2011-01-02T13:14:15.000Z\ttest\t{"a":1}\n] + %[2011-01-02T13:14:15.000Z\ttest\t{"a":2}\n]
 
     # FileOutput#write returns path
     path = d.run

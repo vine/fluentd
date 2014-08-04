@@ -9,7 +9,7 @@ module StreamOutputTest
   def test_write
     d = create_driver
 
-    time = Time.parse("2011-01-02 13:14:15 UTC").to_i
+    time = Time.parse("2011-01-02 13:14:15 UTC").to_f
     d.emit({"a"=>1}, time)
     d.emit({"a"=>2}, time)
 
