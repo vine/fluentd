@@ -41,7 +41,7 @@ module Fluent
 
     def emit(tag, es, chain)
       es.each {|time,record|
-        $log.write "#{Time.at(time).localtime} #{tag}: #{@output_proc.call(record)}\n"
+        $log.write "#{Time.at(time).localtime.iso8601(3)} #{tag}: #{@output_proc.call(record)}\n"
       }
       $log.flush
 
