@@ -1,6 +1,8 @@
 #
 # Fluentd
 #
+# Copyright (C) 2011 FURUHASHI Sadayuki
+#
 #    Licensed under the Apache License, Version 2.0 (the "License");
 #    you may not use this file except in compliance with the License.
 #    You may obtain a copy of the License at
@@ -88,11 +90,13 @@ module Fluent
         :suppress_repeated_stacktrace => true,
         :without_source => false,
         :use_v1_config => true,
+        :supervise => true,
       }
     end
 
     def initialize(opt)
       @daemonize = opt[:daemonize]
+      @supervise = opt[:supervise]
       @config_path = opt[:config_path]
       @inline_config = opt[:inline_config]
       @use_v1_config = opt[:use_v1_config]
@@ -121,9 +125,24 @@ module Fluent
 
       dry_run if @dry_run
       start_daemonize if @daemonize
-      install_supervisor_signal_handlers
-      until @finished
-        supervise do
+      if @supervise
+        install_supervisor_signal_handlers
+        until @finished
+          supervise do
+            read_config
+            change_privilege
+            init_engine
+            install_main_process_signal_handlers
+            run_configure
+            finish_daemonize if @daemonize
+            run_engine
+            exit 0
+          end
+          $log.error "fluentd main process died unexpectedly. restarting." unless @finished
+        end
+      else
+        $log.info "starting fluentd-#{Fluent::VERSION} without supervision"
+        main_process do
           read_config
           change_privilege
           init_engine
@@ -133,7 +152,6 @@ module Fluent
           run_engine
           exit 0
         end
-        $log.error "fluentd main process died unexpectedly. restarting." unless @finished
       end
     end
 
