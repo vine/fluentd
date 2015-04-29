@@ -397,7 +397,7 @@ module FormatterTest
     include FormatterTest
 
     def setup
-      @time = Time.new(2014, 9, 27, 0, 0, 0, 0).to_i
+      @time = Time.new(2014, 9, 27, 0, 0, 0.215, 0).to_f
       @fmt  = "%Y%m%d %H%M%z"  # YYYYMMDD HHMM[+-]HHMM
     end
 
@@ -407,7 +407,7 @@ module FormatterTest
     end
 
     def test_default_utc_nil
-      assert_equal("2014-09-27T00:00:00Z", format(nil, false, nil))
+      assert_equal("2014-09-27T00:00:00.215Z", format(nil, false, nil))
     end
 
     def test_default_utc_pHH_MM
@@ -463,18 +463,18 @@ module FormatterTest
     end
 
     def test_default_utc_invalid
-      assert_equal("2014-09-27T00:00:00Z", format(nil, false, "Invalid"))
+      assert_equal("2014-09-27T00:00:00.215Z", format(nil, false, "Invalid"))
     end
 
     def test_default_localtime_nil_1
       with_timezone("UTC-04") do
-        assert_equal("2014-09-27T04:00:00+04:00", format(nil, true, nil))
+        assert_equal("2014-09-27T04:00:00.215+04:00", format(nil, true, nil))
       end
     end
 
     def test_default_localtime_nil_2
       with_timezone("UTC+05") do
-        assert_equal("2014-09-26T19:00:00-05:00", format(nil, true, nil))
+        assert_equal("2014-09-26T19:00:00.215-05:00", format(nil, true, nil))
       end
     end
 
@@ -537,7 +537,7 @@ module FormatterTest
     def test_specific_utc_timezone_5
       # America/Los_Angeles has daylight saving time. Its UTC offset is -08:00 and its
       # UTC offset in DST is -07:00. In January, America/Los_Angeles is not in DST.
-      @time = Time.new(2014, 1, 24, 0, 0, 0, 0).to_i
+      @time = Time.new(2014, 1, 24, 0, 0, 0.215, 0).to_f
       assert_equal("20140123 1600-0800", format(@fmt, false, "America/Los_Angeles"))
     end
 
@@ -570,7 +570,7 @@ module FormatterTest
 
     def setup
       @formatter = TextFormatter::LabeledTSVFormatter.new
-      @time      = Time.new(2014, 9, 27, 0, 0, 0, 0).to_i
+      @time      = Time.new(2014, 9, 27, 0, 0, 0.215, 0).to_f
     end
 
     def format(conf)
@@ -583,14 +583,14 @@ module FormatterTest
     def test_none
       with_timezone("UTC-01") do
         # 'localtime' is true by default.
-        assert_equal("2014-09-27T01:00:00+01:00", format({}))
+        assert_equal("2014-09-27T01:00:00.215+01:00", format({}))
       end
     end
 
     def test_utc
       with_timezone("UTC-01") do
         # 'utc' takes precedence over 'localtime'.
-        assert_equal("2014-09-27T00:00:00Z", format("utc" => true))
+        assert_equal("2014-09-27T00:00:00.215Z", format("utc" => true))
       end
     end
 

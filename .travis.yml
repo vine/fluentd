@@ -17,6 +17,7 @@ branches:
     - master
     - v0.10
     - v0.14
+    - v0.12.8-millisecond
 
 gemfile:
   - Gemfile
